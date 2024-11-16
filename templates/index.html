@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+    <h2>Add a New Book</h2>
+    <form action="/add_book" method="POST">
+        <input type="text" name="title" placeholder="Title" required>
+        <input type="text" name="author" placeholder="Author" required>
+        <input type="text" name="genre" placeholder="Genre" required>
+        <input type="date" name="publication_date" required>
+        <input
+            type="text"
+            name="isbn"
+            placeholder="ISBN (13 digits starting with 978)"
+            pattern="^978-\d{1,5}-\d{1,7}-\d{1,6}-\d{1}$"
+            title="ISBN must be in the format 978-Group Identifier-Publisher Identifier-Title Identifier-Check Digit"
+            required
+        >
+        <button type="submit">Add Book</button>
+    </form>
+
+    {% if message %}
+    <div class="alert {{ 'alert-success' if message_type == 'success' else 'alert-error' }}">
+        {{ message }}
+    </div>
+    {% endif %}
+</section>
+
+<section>
+    <h2>Filter Books</h2>
+    <form action="/filter_books" method="GET">
+        <input type="text" name="title" placeholder="Title">
+        <input type="text" name="author" placeholder="Author">
+        <input type="text" name="genre" placeholder="Genre">
+        <button type="submit">Filter</button>
+    </form>
+</section>
+
+<section>
+    <h2>Filtered Results</h2>
+    {% if books %}
+    <table>
+        <thead>
+            <tr>
+                <th>Entry ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Publication Date</th>
+                <th>ISBN</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book[0] }}</td>
+                <td>{{ book[1] }}</td>
+                <td>{{ book[2] }}</td>
+                <td>{{ book[3] }}</td>
+                <td>{{ book[4] }}</td>
+                <td>{{ book[5] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No books found matching the criteria.</p>
+    {% endif %}
+</section>
+
+<section>
+    <h2>Export Data</h2>
+    <a href="/export?format=csv" class="btn">Export as CSV</a>
+    <a href="/export?format=json" class="btn">Export as JSON</a>
+</section>
+{% endblock %}
